@@ -13,27 +13,36 @@ import Cookies from "cookies";
 
 @Resolver()
 export default class UserResolver {
+  // get la list des users
   @Query(() => [User])
   async users() {
     return await new UserService().listUsers();
   }
+  // se logger,
   @Query(() => Message)
+  // le input loggin se trouve dans l'entity et le ctx est le contexte qui se trouve dans index.
+  // il permet de transmettre le token à tous les retours des routes
   async login(@Arg("infos") infos: InputLogin, @Ctx() ctx: MyContext) {
+    // vérifier que l email existe grace au find user by email du service user,
     const user = await new UserService().findUserByEmail(infos.email);
     if (!user) {
       throw new Error("Vérifiez vos informations");
     }
+    // erifier que le hash avec argon2 correspond,
     const isPasswordValid = await argon2.verify(user.password, infos.password);
     const m = new Message();
     if (isPasswordValid) {
+      // v creer un token,
       const token = await new SignJWT({ email: user.email })
         .setProtectedHeader({ alg: "HS256", typ: "jwt" })
         .setExpirationTime("2h")
         .sign(new TextEncoder().encode(`${process.env.SECRET_KEY}`));
 
+      // le mettre dans les cookies,
       let cookies = new Cookies(ctx.req, ctx.res);
       cookies.set("token", token, { httpOnly: true });
 
+      // renvoyer un message
       m.message = "Bienvenue!";
       m.success = true;
     } else {
@@ -43,6 +52,7 @@ export default class UserResolver {
     return m;
   }
 
+  // pour le logout, on récupère le contexte et on test s'il y a un user et s il y a un user on efface le token en lui metttant une valeur vide
   @Query(() => Message)
   async logout(@Ctx() ctx: MyContext) {
     if (ctx.user) {

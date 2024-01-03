@@ -5,6 +5,7 @@ import { MyContext } from "..";
 
 @Resolver()
 export default class BookResolver {
+  //authorized permet de limiter l'acces de la route dans notre cas à quelqu un de connecté. l'autorisation est configurée dans le service auth checker puis mis en place dans le fichier index, dans le schema
   @Authorized()
   @Query(() => [Book])
   async books() {

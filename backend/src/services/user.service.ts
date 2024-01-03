@@ -2,6 +2,9 @@ import { Repository } from "typeorm";
 import datasource from "../lib/datasource";
 import User, { InputRegister } from "../entities/user.entity";
 
+// le service est utilisé par les resolvers et permettent d'interagir avec la base de donnée
+// ils sont exportés dans les resolvers
+
 export default class UserService {
   db: Repository<User>;
   constructor() {
