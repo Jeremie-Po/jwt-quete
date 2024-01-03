@@ -23,10 +23,43 @@ export type Book = {
   title: Scalars['String']['output'];
 };
 
+export type InputLogin = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type InputRegister = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type Message = {
+  __typename?: 'Message';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  register: UserWithoutPassword;
+};
+
+
+export type MutationRegisterArgs = {
+  infos: InputRegister;
+};
+
 export type Query = {
   __typename?: 'Query';
   books: Array<Book>;
+  login: Message;
+  logout: Message;
   users: Array<User>;
+};
+
+
+export type QueryLoginArgs = {
+  infos: InputLogin;
 };
 
 export type User = {
@@ -34,6 +67,12 @@ export type User = {
   email: Scalars['String']['output'];
   id: Scalars['String']['output'];
   password: Scalars['String']['output'];
+};
+
+export type UserWithoutPassword = {
+  __typename?: 'UserWithoutPassword';
+  email: Scalars['String']['output'];
+  id: Scalars['String']['output'];
 };
 
 export type BooksQueryVariables = Exact<{ [key: string]: never; }>;
